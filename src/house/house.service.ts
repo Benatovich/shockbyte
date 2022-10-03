@@ -40,6 +40,21 @@ export class HouseService {
   
   async update(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
     let toUpdate = await this.houseRepository.findOneBy({ id: id });
+    delete toUpdate.id;
+    delete toUpdate.ubid;
+    
+    let updated = Object.assign(toUpdate, updateHouseDto);
+    
+    return await this.houseRepository.save(updated);
+
+    // return `This action updates a #${id} house`;
+  }
+
+  async updateHistory(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
+    let toUpdate = await this.houseRepository.findOneBy({ id: id });
+    delete toUpdate.id;
+    delete toUpdate.ubid;
+
     let updated = Object.assign(toUpdate, updateHouseDto);
     
     return await this.houseRepository.save(updated);
