@@ -2,13 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { HouseService } from './house.service';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
+import { House } from './entities/house.entity';
 
 @Controller('house')
 export class HouseController {
   constructor(private readonly houseService: HouseService) {}
 
   @Post()
-  create(@Body() createHouseDto: CreateHouseDto) {
+  create(@Body() createHouseDto: CreateHouseDto): Promise<House> {
     return this.houseService.create(createHouseDto);
   }
 

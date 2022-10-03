@@ -1,17 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, Generated } from "typeorm";
 
 @Entity()
 export class House {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column('uuid')
+    @Column()
+    @Generated('uuid')
     ubid: string;
     
-    @Column('int')
+    @Column({ default: 0 })
     birds: number;
     
-    @Column('int')
+    @Column({ default: 0 })
     eggs: number;
 
     @Column()

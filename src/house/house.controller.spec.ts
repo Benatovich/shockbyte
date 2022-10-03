@@ -59,4 +59,18 @@ describe('HouseController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('create()', () => {
+    it('should register a new birdhouse', () => {
+      controller.create(createHouseDto);
+      expect(controller.create(createHouseDto)).resolves.toEqual({
+        id: '1',
+        ...createHouseDto,
+      });
+    });
+
+
+    
+  })
+
 });
