@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { House } from './entities/house.entity';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
+import { v4 as uuid } from  'uuid';
 
 @Injectable()
 export class HouseService {
@@ -22,13 +23,13 @@ export class HouseService {
     // return 'This action adds a new house';
   }
 
-  findAll(): Promise<House[]> {
+  async findAll(): Promise<House[]> {
     return this.houseRepository.find();
     // return `This action returns all house`;
   }
   
-  findOne(id: string): Promise<House> {
-    return this.houseRepository.findOneBy({ id });
+  findOne(id: string = uuid()): Promise<House> {
+    return this.houseRepository.findOneBy({ id: id });
     // return `This action returns a #${id} house`;
   }
   
