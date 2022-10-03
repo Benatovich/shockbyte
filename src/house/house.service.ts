@@ -28,8 +28,12 @@ export class HouseService {
     // return `This action returns all house`;
   }
   
-  findOne(id: string = uuid()): Promise<House> {
-    return this.houseRepository.findOneBy({ id: id });
+  async findOne(id: string = uuid()): Promise<House> {
+    const response = await this.houseRepository.findOneBy({ id: id });
+    delete response.id;
+    delete response.ubid;
+
+    return response;
     // return `This action returns a #${id} house`;
   }
   
@@ -40,31 +44,27 @@ export class HouseService {
   
   async update(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
     let toUpdate = await this.houseRepository.findOneBy({ id: id });
-    // delete toUpdate.id;
-    // delete toUpdate.ubid;
     
     let updated = Object.assign(toUpdate, updateHouseDto);
-    // delete updated.id;
-    // delete updated.ubid;
     
     const response = await this.houseRepository.save(updated);
     delete response.id;
     delete response.ubid;
     
     return response;
-    // return await this.houseRepository.save(updated);
     // return `This action updates a #${id} house`;
   }
 
   async updateHistory(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
     let toUpdate = await this.houseRepository.findOneBy({ id: id });
-    delete toUpdate.id;
-    delete toUpdate.ubid;
 
     let updated = Object.assign(toUpdate, updateHouseDto);
     
-    return await this.houseRepository.save(updated);
-
+    const response = await this.houseRepository.save(updated);
+    delete response.id;
+    delete response.ubid;
+    
+    return response;
     // return `This action updates a #${id} house`;
   }
 }
