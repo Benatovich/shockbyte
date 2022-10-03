@@ -14,7 +14,7 @@ export class HouseController {
     return this.houseService.create(createHouseDto);
   }
 
-  @Get('/:id')
+  @Get(':id')
   findOne(@Param('id') id: string = uuid()): Promise<House> {
     return this.houseService.findOne(id);
   }

@@ -38,7 +38,12 @@ export class HouseService {
     // return `This action removes a #${id} house`;
   }
   
-  update(id: string, updateHouseDto: UpdateHouseDto) {
-    return `This action updates a #${id} house`;
+  async update(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
+    let toUpdate = await this.houseRepository.findOneBy({ id: id });
+    let updated = Object.assign(toUpdate, updateHouseDto);
+    
+    return await this.houseRepository.save(updated);
+
+    // return `This action updates a #${id} house`;
   }
 }
