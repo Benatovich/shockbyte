@@ -5,6 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HouseModule } from './house/house.module';
 import { House } from './house/entities/house.entity';
+import { HouseHistory } from './house/entities/houseHistory.entity';
+import { TypeOrmHistoryModule } from '@kittgen/nestjs-typeorm-history';
+import { createConnection, Connection } from 'typeorm';
 
 @Module({
   imports: [
@@ -14,12 +17,18 @@ import { House } from './house/entities/house.entity';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'salve0,hewer',
+      password: 'password',
       // password: `${process.env.PASSWORD}`,
       database: 'postgres',
-      entities: [House],
+      entities: [House, HouseHistory],
       synchronize: true,
     }),
+    // TypeOrmHistoryModule.registerAsync({
+    //   inject: [Connection],
+    //   useFactory: (connection: Connection) => ({
+    //     connection,
+    //   })
+    // })
   ],  
   controllers: [AppController],
   providers: [AppService],
