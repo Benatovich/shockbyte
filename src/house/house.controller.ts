@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Header, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Header, Headers, UnauthorizedException, Req, Res, ParseUUIDPipe } from '@nestjs/common';
 import { HouseService } from './house.service';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
 import { House } from './entities/house.entity';
+import { TestHeaderDto } from '../app.dto';
 import { v4 as uuid } from 'uuid';
+import { RequestHeaders } from '../request-headers.decorator';
 // import { LocalAuthGuard } from '../auth/local-auth.guard';
 // import { Response as Res} from 'express';
 
@@ -13,18 +15,26 @@ export class HouseController {
 
   // register a new birdhouse
   @Post()
-  // figure out how to make dynamic header
-  @Header('X-UBID', '<UBID>')
-  create(@Body() createHouseDto: CreateHouseDto): Promise<House> {
+  create(
+    @Body() createHouseDto: CreateHouseDto): Promise<House> {
     return this.houseService.create(createHouseDto);
   }
 
   // update number of birds/eggs at a given birdhouse
   // @UseGuards(LocalAuthGuard)
   @Post(':id/residency')
-  // figure out how to make dynamic header
-  @Header('X-UBID', '<UBID>')
-  updateResidents(@Param('id') id: string, @Body() updateHouseDto: UpdateHouseDto): Promise<House> {
+  // @Header('content-type', 'application/json')
+  updateResidents(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @RequestHeaders() headers: TestHeaderDto,
+    // @Req() req,
+    // @Headers() header: Record<string>,
+    @Body() updateHouseDto: UpdateHouseDto): Promise<House> {
+      // req.header("X-UBID", this.houseService.getUbid(id));
+      // res.end();
+
+      console.log({ headers })
+
     const response = this.houseService.authenticate(id);
     if(!response) {
       throw new UnauthorizedException();
@@ -35,9 +45,8 @@ export class HouseController {
 
   // get info about a birdhouse
   @Get(':id')
-  // figure out how to make dynamic header
-  @Header('X-UBID', '<UBID>')
-  findOne(@Param('id') id: string = uuid()): Promise<House> {
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string = uuid()): Promise<House> {
     const response = this.houseService.authenticate(id);
     if(!response) {
       throw new UnauthorizedException();
@@ -54,7 +63,8 @@ export class HouseController {
 
   // remove a birdhouse
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
+  remove(
+    @Param('id', ParseUUIDPipe) id: string): Promise<void> {
     const response = this.houseService.authenticate(id);
     if(!response) {
       throw new UnauthorizedException();
@@ -65,9 +75,8 @@ export class HouseController {
 
 // update the name or location data for a birdhouse
   @Patch(':id')
-  // figure out how to make dynamic header
-  @Header('X-UBID', '<UBID>')
-  update(@Param('id') id: string, @Body() createHouseDto: CreateHouseDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string, @Body() createHouseDto: CreateHouseDto) {
     const response = this.houseService.authenticate(id);
     if(!response) {
       throw new UnauthorizedException();

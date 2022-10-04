@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import "reflect-metadata";
+import { ValidationPipe } from '@nestjs/common';
 // import { NestExpressApplication } from '@nestjs/platform-express';
 
 declare const module: any;
@@ -11,6 +12,11 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('/api/v1');
+  app.useGlobalPipes(
+    new ValidationPipe({
+      validateCustomDecorators: true
+    })
+  );
 
   await app.listen(3000)
   .then(() => {

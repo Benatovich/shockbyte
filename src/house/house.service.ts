@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ParseUUIDPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
 import { Repository } from 'typeorm';
 import { House } from './entities/house.entity';
@@ -83,4 +83,13 @@ export class HouseService {
     }
     return null;
   }
+
+  async getUbid(id: string): Promise<string> {
+    const house = await this.houseRepository.findOneBy({ id: id });
+    if (house.ubid) {
+      return house.ubid;
+    }
+    return null;
+  }
+
 }

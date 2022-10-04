@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HouseController } from './house.controller';
-import { HouseService } from './house.service';
-import { CreateHouseDto } from './dto/create-house.dto';
+import { HouseController } from '../house.controller';
+import { HouseService } from '../house.service';
+import { CreateHouseDto } from '../dto/create-house.dto';
 
 const createHouseDto: CreateHouseDto = {
   longitude: 3,
