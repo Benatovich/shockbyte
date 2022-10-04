@@ -9,10 +9,10 @@ import { v4 as uuid } from  'uuid';
 @Injectable()
 export class HouseService {
   private readonly logger = new Logger(HouseService.name)
-  
+
   constructor(
     @InjectRepository(House)
-    private readonly houseRepository: Repository<House>,
+    private houseRepository: Repository<House>,
   ) {}
 
   create(createHouseDto: CreateHouseDto): Promise<House> {
@@ -21,10 +21,12 @@ export class HouseService {
     house.longitude = createHouseDto.longitude;
     house.name = createHouseDto.name;
 
+    this.logger.log('Registered a new birdhouse')
     return this.houseRepository.save(house);
   }
 
   async findAll(): Promise<House[]> {
+    this.logger.log('Retrieved data for all birdhouses')
     return this.houseRepository.find();
   }
   
@@ -33,10 +35,12 @@ export class HouseService {
     delete response.id;
     delete response.ubid;
 
+    this.logger.log('Retrieved data for a single birdhouse')
     return response;
   }
   
   async remove(id: string): Promise<void> {
+    this.logger.log('Removed a birdhouse from the database')
     await this.houseRepository.delete(id);
   }
   
@@ -49,6 +53,7 @@ export class HouseService {
     delete response.id;
     delete response.ubid;
     
+    this.logger.log('Updated name and/or location data for a birdhouse')
     return response;
   }
 
@@ -61,6 +66,7 @@ export class HouseService {
     delete response.id;
     delete response.ubid;
     
+    this.logger.log('Updated bird and/or egg data for a birdhouse')
     return response;
   }
 }
