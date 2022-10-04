@@ -1,16 +1,18 @@
-// import { Injectable } from '@nestjs/common';
-// // import { UsersService } from '../users/users.service';
+import { Injectable } from '@nestjs/common';
+// import { UsersService } from '../users/users.service';
+import { HouseService } from '../house/house.service';
+import { v4 as uuid } from 'uuid';
 
-// @Injectable()
-// export class AuthService {
-//   constructor(private usersService: UsersService) {}
+@Injectable()
+export class AuthService {
+  constructor(private houseService: HouseService) {}
 
-//   async validateUser(username: string, pass: string): Promise<any> {
-//     const user = await this.usersService.findOne(username);
-//     if (user && user.password === pass) {
-//       const { password, ...result } = user;
-//       return result;
-//     }
-//     return null;
-//   }
-// }
+  async validateBirdhouse(id: string = uuid(), ubid: string): Promise<any> {
+    const house = await this.houseService.findOne(id);
+    if (house && house.ubid === ubid) {
+      const { ubid, ...result } = house;
+      return result;
+    }
+    return null;
+  }
+}

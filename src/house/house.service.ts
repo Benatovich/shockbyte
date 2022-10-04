@@ -36,7 +36,7 @@ export class HouseService {
     return this.houseRepository.find();
   }
   
-  async findOne(id: string = uuid()): Promise<House> {
+  async findOne(id: string = uuid()): Promise<House | undefined> {
     const response = await this.houseRepository.findOneBy({ id: id });
     delete response.id;
     delete response.ubid;

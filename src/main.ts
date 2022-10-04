@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import "reflect-metadata";
 import { ValidationPipe } from '@nestjs/common';
+// import { default as passport } from './'
 // import { NestExpressApplication } from '@nestjs/platform-express';
 
 declare const module: any;
@@ -12,6 +13,7 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('/api/v1');
+  // app.use(passport.initialize())
   app.useGlobalPipes(
     new ValidationPipe({
       validateCustomDecorators: true
