@@ -4,6 +4,7 @@ import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
 import { House } from './entities/house.entity';
 import { v4 as uuid } from 'uuid';
+import { AuthService } from '../auth/auth.service';
 import { Response as Res} from 'express';
 
 @Controller('house')

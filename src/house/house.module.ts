@@ -6,7 +6,7 @@ import { House } from './entities/house.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([House])],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, HouseService],
   controllers: [HouseController],
   providers: [HouseService]
 })
