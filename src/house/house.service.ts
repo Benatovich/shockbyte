@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm/dist';
 import { Repository } from 'typeorm';
 import { House } from './entities/house.entity';
@@ -8,6 +8,8 @@ import { v4 as uuid } from  'uuid';
 
 @Injectable()
 export class HouseService {
+  private readonly logger = new Logger(HouseService.name)
+  
   constructor(
     @InjectRepository(House)
     private readonly houseRepository: Repository<House>,
@@ -20,12 +22,10 @@ export class HouseService {
     house.name = createHouseDto.name;
 
     return this.houseRepository.save(house);
-    // return 'This action adds a new house';
   }
 
   async findAll(): Promise<House[]> {
     return this.houseRepository.find();
-    // return `This action returns all house`;
   }
   
   async findOne(id: string = uuid()): Promise<House> {
@@ -34,12 +34,10 @@ export class HouseService {
     delete response.ubid;
 
     return response;
-    // return `This action returns a #${id} house`;
   }
   
   async remove(id: string): Promise<void> {
     await this.houseRepository.delete(id);
-    // return `This action removes a #${id} house`;
   }
   
   async update(id: string, createHouseDto: CreateHouseDto): Promise<House> {
@@ -52,7 +50,6 @@ export class HouseService {
     delete response.ubid;
     
     return response;
-    // return `This action updates a #${id} house`;
   }
 
   async updateResidents(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
@@ -65,6 +62,5 @@ export class HouseService {
     delete response.ubid;
     
     return response;
-    // return `This action updates a #${id} house`;
   }
 }
