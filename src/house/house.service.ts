@@ -5,6 +5,7 @@ import { House } from './entities/house.entity';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
 import { v4 as uuid } from  'uuid';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class HouseService {
@@ -15,14 +16,19 @@ export class HouseService {
     private houseRepository: Repository<House>,
   ) {}
 
-  create(createHouseDto: CreateHouseDto): Promise<House> {
+  async create(createHouseDto: CreateHouseDto): Promise<House> {
     const house = new House();
     house.latitude = createHouseDto.latitude;
     house.longitude = createHouseDto.longitude;
     house.name = createHouseDto.name;
 
-    this.logger.log('Registered a new birdhouse')
-    return this.houseRepository.save(house);
+    const errors = await validate(house)
+    if(errors.length > 0) {
+      throw new Error('Invalid birdhouse')
+    } else {
+      this.logger.log('Registered a new birdhouse')
+      return this.houseRepository.save(house);
+    }
   }
 
   async findAll(): Promise<House[]> {
@@ -68,5 +74,13 @@ export class HouseService {
     
     this.logger.log('Updated bird and/or egg data for a birdhouse')
     return response;
+  }
+
+  async authenticate(id: string): Promise<any> {
+    const house = await this.houseRepository.findOneBy({ id: id });
+    if (house && house.ubid != null) {
+      return house;
+    }
+    return null;
   }
 }

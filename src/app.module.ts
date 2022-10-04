@@ -8,7 +8,7 @@ import { House } from './house/entities/house.entity';
 import { HouseHistory } from './house/entities/houseHistory.entity';
 import { TypeOrmHistoryModule } from '@kittgen/nestjs-typeorm-history';
 import { createConnection, Connection } from 'typeorm';
-import { AuthModule } from './auth/auth.module';
+// import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,7 +24,6 @@ import { AuthModule } from './auth/auth.module';
       entities: [House, HouseHistory],
       synchronize: true,
     }),
-    AuthModule,
     // TypeOrmHistoryModule.registerAsync({
     //   inject: [Connection],
     //   useFactory: (connection: Connection) => ({

@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Header, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Header, UnauthorizedException } from '@nestjs/common';
 import { HouseService } from './house.service';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
 import { House } from './entities/house.entity';
 import { v4 as uuid } from 'uuid';
-import { AuthService } from '../auth/auth.service';
-import { Response as Res} from 'express';
+// import { LocalAuthGuard } from '../auth/local-auth.guard';
+// import { Response as Res} from 'express';
 
 @Controller('house')
 export class HouseController {
@@ -20,11 +20,17 @@ export class HouseController {
   }
 
   // update number of birds/eggs at a given birdhouse
+  // @UseGuards(LocalAuthGuard)
   @Post(':id/residency')
   // figure out how to make dynamic header
   @Header('X-UBID', '<UBID>')
   updateResidents(@Param('id') id: string, @Body() updateHouseDto: UpdateHouseDto): Promise<House> {
-    return this.houseService.updateResidents(id, updateHouseDto);
+    const response = this.houseService.authenticate(id);
+    if(!response) {
+      throw new UnauthorizedException();
+    } else {
+      return this.houseService.updateResidents(id, updateHouseDto);
+    }
   }
 
   // get info about a birdhouse
@@ -32,7 +38,12 @@ export class HouseController {
   // figure out how to make dynamic header
   @Header('X-UBID', '<UBID>')
   findOne(@Param('id') id: string = uuid()): Promise<House> {
-    return this.houseService.findOne(id);
+    const response = this.houseService.authenticate(id);
+    if(!response) {
+      throw new UnauthorizedException();
+    } else {
+      return this.houseService.findOne(id);
+    }
   }
 
   // get info about all birdhouses
@@ -44,7 +55,12 @@ export class HouseController {
   // remove a birdhouse
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
-    return this.houseService.remove(id);
+    const response = this.houseService.authenticate(id);
+    if(!response) {
+      throw new UnauthorizedException();
+    } else {
+      return this.houseService.remove(id);
+    }
   }
 
 // update the name or location data for a birdhouse
@@ -52,6 +68,11 @@ export class HouseController {
   // figure out how to make dynamic header
   @Header('X-UBID', '<UBID>')
   update(@Param('id') id: string, @Body() createHouseDto: CreateHouseDto) {
-    return this.houseService.update(id, createHouseDto);
+    const response = this.houseService.authenticate(id);
+    if(!response) {
+      throw new UnauthorizedException();
+    } else {
+      return this.houseService.update(id, createHouseDto);
+    }
   }
 }
