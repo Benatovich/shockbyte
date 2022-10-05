@@ -21,6 +21,9 @@ export class House {
 
     @Column()
     latitude: number;
+    
+    @Column({ type: 'timestamptz'})
+    lastUpdated: Date;
 
     // must be 4-16 characters
     @Column()

@@ -3,7 +3,7 @@ import { HouseService } from './house.service';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
 import { House } from './entities/house.entity';
-import { TestHeaderDto } from '../app.dto';
+// import { TestHeaderDto } from '../app.dto';
 import { v4 as uuid } from 'uuid';
 import { RequestHeaders } from '../request-headers.decorator';
 // import { LocalAuthGuard } from '../auth/local-auth.guard';
@@ -26,14 +26,14 @@ export class HouseController {
   // @Header('content-type', 'application/json')
   updateResidents(
     @Param('id', ParseUUIDPipe) id: string, 
-    @RequestHeaders() headers: TestHeaderDto,
+    // @RequestHeaders() headers: TestHeaderDto,
     // @Req() req,
     // @Headers() header: Record<string>,
     @Body() updateHouseDto: UpdateHouseDto): Promise<House> {
       // req.header("X-UBID", this.houseService.getUbid(id));
       // res.end();
 
-      console.log({ headers })
+      // console.log({ headers })
 
     const response = this.houseService.authenticate(id);
     if(!response) {

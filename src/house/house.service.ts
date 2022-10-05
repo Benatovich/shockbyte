@@ -17,10 +17,15 @@ export class HouseService {
   ) {}
 
   async create(createHouseDto: CreateHouseDto): Promise<House> {
+    let today = new Date();
+
     const house = new House();
     house.latitude = createHouseDto.latitude;
     house.longitude = createHouseDto.longitude;
     house.name = createHouseDto.name;
+    house.lastUpdated = today;
+
+
 
     const errors = await validate(house)
     if(errors.length > 0) {
@@ -51,9 +56,11 @@ export class HouseService {
   }
   
   async update(id: string, createHouseDto: CreateHouseDto): Promise<House> {
+    let today = new Date();
     let toUpdate = await this.houseRepository.findOneBy({ id: id });
     
     let updated = Object.assign(toUpdate, createHouseDto);
+    updated.lastUpdated = today;
     
     const response = await this.houseRepository.save(updated);
     delete response.id;
@@ -64,9 +71,11 @@ export class HouseService {
   }
 
   async updateResidents(id: string, updateHouseDto: UpdateHouseDto): Promise<House> {
+    let today = new Date();
     let toUpdate = await this.houseRepository.findOneBy({ id: id });
 
     let updated = Object.assign(toUpdate, updateHouseDto);
+    updated.lastUpdated = today;
     
     const response = await this.houseRepository.save(updated);
     delete response.id;
