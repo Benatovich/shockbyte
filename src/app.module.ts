@@ -5,10 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HouseModule } from './house/house.module';
 import { House } from './house/entities/house.entity';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     HouseModule,
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -19,13 +21,7 @@ import { House } from './house/entities/house.entity';
       database: 'postgres',
       entities: [House],
       synchronize: true,
-    }),
-    // TypeOrmHistoryModule.registerAsync({
-    //   inject: [Connection],
-    //   useFactory: (connection: Connection) => ({
-    //     connection,
-    //   })
-    // })
+    })
   ],  
   controllers: [AppController],
   providers: [AppService],

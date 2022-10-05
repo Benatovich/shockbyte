@@ -1,19 +1,20 @@
 import { Injectable, Logger, ParseUUIDPipe } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm/dist';
-import { Repository } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm/dist';
+import { Repository, DataSource, QueryBuilder } from 'typeorm';
 import { House } from './entities/house.entity';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
 import { v4 as uuid } from  'uuid';
 import { validate } from 'class-validator';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class HouseService {
   private readonly logger = new Logger(HouseService.name)
 
   constructor(
-    @InjectRepository(House)
-    private houseRepository: Repository<House>,
+    @InjectRepository(House) private houseRepository: Repository<House>,
+    @InjectDataSource() private dataSource: DataSource
   ) {}
 
   async create(createHouseDto: CreateHouseDto): Promise<House> {
@@ -25,9 +26,8 @@ export class HouseService {
     house.name = createHouseDto.name;
     house.lastUpdated = today;
 
-
-
     const errors = await validate(house)
+    
     if(errors.length > 0) {
       throw new Error('Invalid birdhouse')
     } else {
@@ -48,11 +48,6 @@ export class HouseService {
 
     this.logger.log('Retrieved data for a single birdhouse')
     return response;
-  }
-  
-  async remove(id: string): Promise<void> {
-    this.logger.log('Removed a birdhouse from the database')
-    await this.houseRepository.delete(id);
   }
   
   async update(id: string, createHouseDto: CreateHouseDto): Promise<House> {
@@ -87,15 +82,39 @@ export class HouseService {
     return response;
   }
 
-  // async authenticate(id: string): Promise<House | null> {
-  //   const house = await this.houseRepository.findOneBy({ id: id });
-  //   if (house && house.ubid != null) {
-  //     return house;
-  //   }
-  //   return null;
+  async remove(id: string): Promise<void> {
+    this.logger.log('Removed a birdhouse from the database')
+    await this.houseRepository.delete(id);
+  }
+
+  // async findByLastUpdated(lastUpdated: Date): Promise<House[]> {
+  //   const houses = await this.houseRepository
+  //     .createQueryBuilder("house")
+  //     .where("house.lastUpdated= :lastUpdated", { lastUpdated: lastUpdated })
+  //     .getMany()
+
+  //     return houses
   // }
 
-  async getUbid(id: string): Promise<string> {
+  @Cron('0 0 * * *')
+  async prune(): Promise<any> {
+    this.logger.log('Pruning inactive birdhouses')
+
+    const event = new Date();
+    const thisYear = event.getFullYear();
+    const lastYear = thisYear - 1;
+    event.setFullYear(lastYear); // event should now be the cutoff for pruning
+
+    const houses = await this.houseRepository
+      .createQueryBuilder("house")
+      .where("house.lastUpdated= :lastUpdated", { lastUpdated: event })
+      .getMany()
+
+      return houses   
+  }
+
+
+  async getUbid(id: string): Promise<string | null> {
     const house = await this.houseRepository.findOneBy({ id: id });
     if (house.ubid) {
       return house.ubid;
