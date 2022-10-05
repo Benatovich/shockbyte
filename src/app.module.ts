@@ -5,13 +5,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HouseModule } from './house/house.module';
 import { House } from './house/entities/house.entity';
-import { Log } from './logs/entities/log.entity'
-import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
     HouseModule,
-    LogsModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -20,10 +17,9 @@ import { LogsModule } from './logs/logs.module';
       password: 'password',
       // password: `${process.env.PASSWORD}`,
       database: 'postgres',
-      entities: [House, Log],
+      entities: [House],
       synchronize: true,
     }),
-    LogsModule,
     // TypeOrmHistoryModule.registerAsync({
     //   inject: [Connection],
     //   useFactory: (connection: Connection) => ({

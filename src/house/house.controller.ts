@@ -3,11 +3,8 @@ import { HouseService } from './house.service';
 import { CreateHouseDto } from './dto/create-house.dto';
 import { UpdateHouseDto } from './dto/update-house.dto';
 import { House } from './entities/house.entity';
-// import { TestHeaderDto } from '../app.dto';
 import { v4 as uuid } from 'uuid';
 import { RequestHeaders } from '../request-headers.decorator';
-// import { LocalAuthGuard } from '../auth/local-auth.guard';
-// import { Response as Res} from 'express';
 
 @Controller('house')
 export class HouseController {
@@ -21,21 +18,13 @@ export class HouseController {
   }
 
   // update number of birds/eggs at a given birdhouse
-  // @UseGuards(LocalAuthGuard)
   @Post(':id/residency')
-  // @Header('content-type', 'application/json')
-  updateResidents(
+  async updateResidents(
     @Param('id', ParseUUIDPipe) id: string, 
-    // @RequestHeaders() headers: TestHeaderDto,
-    // @Req() req,
-    // @Headers() header: Record<string>,
     @Body() updateHouseDto: UpdateHouseDto): Promise<House> {
-      // req.header("X-UBID", this.houseService.getUbid(id));
-      // res.end();
+      const ubid = await this.houseService.getUbid(id);
+      const response = this.houseService.authenticate(ubid);
 
-      // console.log({ headers })
-
-    const response = this.houseService.authenticate(id);
     if(!response) {
       throw new UnauthorizedException();
     } else {
@@ -45,9 +34,11 @@ export class HouseController {
 
   // get info about a birdhouse
   @Get(':id')
-  findOne(
+  async findOne(
     @Param('id', ParseUUIDPipe) id: string = uuid()): Promise<House> {
-    const response = this.houseService.authenticate(id);
+      const ubid = await this.houseService.getUbid(id);
+      const response = this.houseService.authenticate(ubid);
+
     if(!response) {
       throw new UnauthorizedException();
     } else {
@@ -63,9 +54,10 @@ export class HouseController {
 
   // remove a birdhouse
   @Delete(':id')
-  remove(
+  async remove(
     @Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    const response = this.houseService.authenticate(id);
+      const ubid = await this.houseService.getUbid(id);
+      const response = this.houseService.authenticate(ubid);
     if(!response) {
       throw new UnauthorizedException();
     } else {
@@ -75,9 +67,10 @@ export class HouseController {
 
 // update the name or location data for a birdhouse
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string, @Body() createHouseDto: CreateHouseDto) {
-    const response = this.houseService.authenticate(id);
+      const ubid = await this.houseService.getUbid(id);
+      const response = this.houseService.authenticate(ubid);
     if(!response) {
       throw new UnauthorizedException();
     } else {

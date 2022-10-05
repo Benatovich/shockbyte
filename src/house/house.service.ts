@@ -87,13 +87,13 @@ export class HouseService {
     return response;
   }
 
-  async authenticate(id: string): Promise<any> {
-    const house = await this.houseRepository.findOneBy({ id: id });
-    if (house && house.ubid != null) {
-      return house;
-    }
-    return null;
-  }
+  // async authenticate(id: string): Promise<House | null> {
+  //   const house = await this.houseRepository.findOneBy({ id: id });
+  //   if (house && house.ubid != null) {
+  //     return house;
+  //   }
+  //   return null;
+  // }
 
   async getUbid(id: string): Promise<string> {
     const house = await this.houseRepository.findOneBy({ id: id });
@@ -103,14 +103,11 @@ export class HouseService {
     return null;
   }
 
-  // async pruneHouses(lastUpdated: Date): Promise<House | undefined> {
-  //   // const inactiveHouseArray = await this.houseRepository.find(house => house.lastUpdated === lastUpdated);
-
-
-  // }
-
-  // async findOne(username: string): Promise<User | undefined> {
-  //   return this.users.find(user => user.username === username);
-  // }
-
+  async authenticate(ubid: string = uuid()): Promise<House | null> {
+    const house = await this.houseRepository.findOneBy({ ubid: ubid });
+    if (house) {
+      return house
+    }
+    return null;
+  }
 }
