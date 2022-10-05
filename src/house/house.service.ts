@@ -31,7 +31,7 @@ export class HouseService {
     if(errors.length > 0) {
       throw new Error('Invalid birdhouse')
     } else {
-      this.logger.log('Registered a new birdhouse')
+      this.logger.log(`Registered a new birdhouse on ${today}`)
       return this.houseRepository.save(house);
     }
   }
@@ -66,7 +66,7 @@ export class HouseService {
     delete response.id;
     delete response.ubid;
     
-    this.logger.log('Updated name and/or location data for a birdhouse')
+    this.logger.log(`Updated name and/or location data for birdhouse id: ${id} on ${today}`)
     return response;
   }
 
@@ -81,7 +81,9 @@ export class HouseService {
     delete response.id;
     delete response.ubid;
     
-    this.logger.log('Updated bird and/or egg data for a birdhouse')
+    this.logger.log(`Updated bird and/or egg data for birdhouse id: ${id} on ${today}`)
+    this.logger.log(`There are now ${updateHouseDto.birds} birds and ${updateHouseDto.eggs} eggs`)
+
     return response;
   }
 
@@ -100,5 +102,15 @@ export class HouseService {
     }
     return null;
   }
+
+  // async pruneHouses(lastUpdated: Date): Promise<House | undefined> {
+  //   // const inactiveHouseArray = await this.houseRepository.find(house => house.lastUpdated === lastUpdated);
+
+
+  // }
+
+  // async findOne(username: string): Promise<User | undefined> {
+  //   return this.users.find(user => user.username === username);
+  // }
 
 }
